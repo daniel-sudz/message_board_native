@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1092488556161",
+    "firebase_url": "https://messages-6dce5.firebaseio.com",
+    "project_id": "messages-6dce5",
+    "storage_bucket": "messages-6dce5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1092488556161:android:b9301d53f8b231a6ad2780",
+        "android_client_info": {
+          "package_name": "com.danielsudz.messageboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1092488556161-soaafputq1ak895p0nln1apaarprofsp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.danielsudz.messageboard",
+            "certificate_hash": "25a085bcd0efd2849bd152f7c8ed94e7f7936d91"
+          }
+        },
+        {
+          "client_id": "1092488556161-eojstoo344sctfu0hjmuk6v22k33ejnm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmaenGWHnnVcPjkx3NjOSXbXoCDE0oDhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1092488556161-eojstoo344sctfu0hjmuk6v22k33ejnm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
