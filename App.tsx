@@ -6,11 +6,11 @@ import {
   Alert,
 } from 'react-native';
 
-import Login from "./src/Login";
+import App from "./src/Login";
 export default class Main extends Component {
   render() {
     return ( 
-      <Login />
+      <App />
     );
   }
 }

@@ -12,19 +12,7 @@ import {
 
 class LoadingScreen extends Component {
 
-    ifloggedin = () => {
-        firebase.auth().onAuthStateChanged(user => {
-            if(user) {
-                this.props.navigation.navigate('DashBoardScreen');
-            }
-            else {
-                this.props.navigation.navigate('LoginScreen');
-            }
-        }
-        )}
-
     render () {
-        this.ifloggedin();
         return (
             <View style={styles_loading.container}>
                 <ActivityIndicator size="large"/>

@@ -1,36 +1,62 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as GoogleSignIn from 'expo-google-sign-in';
-import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import {
-  Button,
-  SafeAreaView,
-  Alert,
-  Image,
+    Button,
+    SafeAreaView,
+    Alert,
+    Image,
 } from 'react-native';
 
 import LoadingScreen from './screens/LoadingScreen';
 import DashBoardScreen from './screens/DashBoardScreen';
 import LoginScreen from './screens/LoginScreen';
 
+type ComponentState = {
+    loggedIn: boolean,
+    email?: string
+};
 
-export default class Login extends Component {
-    render () {
-        return (
-            <AppNavigator/>
-        )
+export default class App extends Component<{}, ComponentState> {
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            loggedIn: false
+        }
+    }
+
+    render() {
+        if (this.state.loggedIn) {
+            return <DashBoardScreen email={this.state.email} />;
+        } else {
+            return (
+                <LoginScreen
+                    onGetEmail={(email: string) => this.setEmail(email)}
+                />
+            );
+        }
+
+    }
+
+    setEmail(email: string) {
+        this.setState({
+            loggedIn: true,
+            email: email
+        });
     }
 }
 
 
 
 const AppSwitchNavigator = createSwitchNavigator({
-    Loading:LoadingScreen,
-    LoginScreen:LoginScreen,
-    DashBoardScreen:DashBoardScreen
+    Loading: LoadingScreen,
+    LoginScreen: LoginScreen,
+    DashBoardScreen: DashBoardScreen
 })
 
-const AppNavigator = createAppContainer (AppSwitchNavigator);
+const AppNavigator = createAppContainer(AppSwitchNavigator);
 
 import * as firebase from 'firebase';
 const FirebaseConfig = {
@@ -57,7 +83,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'flex-start',
         marginTop: 70,
-        
+
     },
     logo: {
         width: 300,
