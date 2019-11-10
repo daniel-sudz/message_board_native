@@ -23,23 +23,24 @@ class LoginScreen extends Component<LoginScreenProps, LoginScreenState> {
     }
     async getresult() {
         try {
-            let login = Google.logInAsync({
-                androidClientId: "1092488556161-d64bugk35q85c6cgdp1sfuctf54gfa09.apps.googleusercontent.com",
-                scopes: ["profile", "email"],
-                behavior: 'web',
-                clientId: "",
-            });
+            await GoogleSignIn.initAsync({ clientId: '<YOUR_IOS_CLIENT_ID>' });
+          } catch ({ message }) {
+            alert('GoogleSignIn.initAsync(): ' + message);
+          }
+
+        try {
+            await GoogleSignIn.askForPlayServicesAsync();
             this.setState({loading: true});
-            let result = await login;
+            const { type, user } = await GoogleSignIn.signInAsync();
             this.setState({loading: false});
-            if (result.type === 'success') {
-                this.props.onGetEmail(result.user.email);
-                return result.accessToken;
+            if (type === 'success') {
+                this.props.onGetEmail(user.email);
+                return;
             }
             else {
+                alert(type+user);
                 return { cancelled: true };
             }
-
         } catch (e) {
             console.log(e);
             return { error: true }
@@ -62,7 +63,6 @@ class LoginScreen extends Component<LoginScreenProps, LoginScreenState> {
                     </TouchableOpacity>
                     </View>
                 </View>
-  
             );
         } else {
             return <LoadingScreen/>
@@ -104,4 +104,3 @@ const styles = StyleSheet.create({
         fontSize: 20,
     }
 });
-//"1092488556161-d64bugk35q85c6cgdp1sfuctf54gfa09.apps.googleusercontent.com

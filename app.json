@@ -26,6 +26,15 @@
     "ios": {
       "supportsTablet": true
     },
+    "android": {
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "20:87:89:4E:4B:29:C4:60:39:0A:0F:E8:4E:CB:48:8E:4D:9E:76:58"
+        }
+      },
+      "package": "com.danielsudz.nativeboard",
+      "googleServicesFile": "./google-services.json"
+    },
     "entryPoint": ".vscode\\exponentIndex.js"
   }
 }

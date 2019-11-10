@@ -12,6 +12,8 @@ import {
 import LoadingScreen from './screens/LoadingScreen';
 import DashBoardScreen from './screens/DashBoardScreen';
 import LoginScreen from './screens/LoginScreen';
+import Message_Board from "./Chat";
+
 
 type ComponentState = {
     loggedIn: boolean,
@@ -29,13 +31,16 @@ export default class App extends Component<{}, ComponentState> {
 
     render() {
         if (this.state.loggedIn) {
-            return <DashBoardScreen email={this.state.email} />;
+            return <Message_Board email={this.state.email} />;
         } else {
             return (
-                <LoginScreen
-                    onGetEmail={(email: string) => this.setEmail(email)}
-                />
+                //<LoginScreen
+                //    onGetEmail={(email: string) => this.setEmail(email)}
+                ///>
+                <Message_Board email={this.state.email} />
+                
             );
+            
         }
 
     }

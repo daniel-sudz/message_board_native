@@ -9,12 +9,15 @@ import {
   Image,
 } from 'react-native';
 
+
+
 class DashBoardScreen extends Component<{email: string}> {
     render () {
         return (
             <View style={styles_dash.container}>
                 <Text> {this.props.email} </Text>
-            </View>            
+            </View>
+            
         );
     }
 }

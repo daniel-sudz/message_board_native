@@ -10,13 +10,18 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.2",
     "expo": "^35.0.0",
+    "expo-font": "~7.0.0",
     "expo-google-app-auth": "^7.0.0",
     "expo-google-sign-in": "~7.0.0",
+    "expo-image-picker": "~7.0.0",
     "firebase": "^7.2.3",
+    "native-base": "^2.13.8",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-native": "0.59.8",
+    "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "^1.5.0",
+    "react-native-scalable-image": "^1.0.0",
     "react-native-web": "^0.11.7",
     "react-navigation": "^4.0.10"
   },
