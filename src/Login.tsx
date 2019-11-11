@@ -34,10 +34,10 @@ export default class App extends Component<{}, ComponentState> {
             return <Message_Board email={this.state.email} />;
         } else {
             return (
-                //<LoginScreen
-                //    onGetEmail={(email: string) => this.setEmail(email)}
-                ///>
-                <Message_Board email={this.state.email} />
+                <LoginScreen
+                    onGetEmail={(email: string) => this.setEmail(email)}
+                />
+                //<Message_Board email={this.state.email} />
                 
             );
             

@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject } from 'react';
+var moment = require('moment-timezone');
+let local_tz = moment.tz.guess();
+console.log(local_tz);
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Button as NativeButton } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {
+  ActivityIndicator,
   Image,
   SafeAreaView,
   Alert,
@@ -17,11 +21,13 @@ interface ComponentProps {
 }
 
 interface ComponentState {
-  json: { content: string }[][],
+  json: { content: string, picture: string, username: string }[][],
   ready: boolean,
   image: any,
   image_data: string,
   post_data: string,
+  is_uploading: boolean,
+  inputTextValue : string,
 }
 
 export default class Message_Board extends Component<ComponentProps, ComponentState>{
@@ -36,11 +42,13 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
   constructor(props: ComponentProps) {
     super(props);
     this.state = {
+      is_uploading: false,
       image: null,
       ready: false,
       json: [],
       image_data: "",
       post_data: "",
+      inputTextValue: "",
     };
     this.update();
   }
@@ -51,7 +59,7 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
         let response = await fetch('https://sudz.dev/update');
         let myJson = await response.json();
         //TODO: remove
-        console.log(myJson);
+        //console.log(myJson);
         this.setState({ json: myJson });
         var mystate = this.state.json;
       } catch (error) {
@@ -80,7 +88,7 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
           mystate.unshift(JSON.parse(e.data)[i]);
         }
         console.log("New message added");
-        console.log(JSON.stringify(mystate));
+        //console.log(JSON.stringify(mystate));
         this.forceUpdate(); //bad, needs to be adressed 
 
       }
@@ -97,6 +105,20 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
       alert("Connection has been lost, please refresh the page. The contents on this page will no longer be updated.");
     };
   }
+  upload_progress() {
+    if (!this.state.is_uploading) {
+      let { image } = this.state;
+
+      let returnobj = image &&
+        <Image source={{ uri: image }} style={styles.insert_picture} />;
+      return ( returnobj )
+    }
+    else {
+      return (<View style={styles.loading}>
+        <ActivityIndicator size="large" />
+      </View>)
+    }
+  }
 
   pickImage = () => {
     ImagePicker.launchImageLibraryAsync({
@@ -104,8 +126,9 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
       allowsEditing: true,
       aspect: [16, 9],
       base64: true,
+      quality: 0.3,
     }).then(result => {
-      console.log("foo");
+      //console.log("foo");
       //console.log(result);
 
       if (result.cancelled === false) {
@@ -125,18 +148,38 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
     interface submit_types {
       post_data: string,
       image_data: string,
+      email: string,
     }
     let submitobj: submit_types = {
-      post_data: this.state.post_data,
-      image_data: this.state.image_data,
+      "post_data": this.state.post_data,
+      "image_data": this.state.image_data,
+      "email" : this.props.email,
     }
     if (submitobj.post_data && submitobj.image_data !== "") {
-      //alert (JSON.stringify(submitobj));
+      this.setState({is_uploading: true});
+      console.log(submitobj.email);
 
       fetch('https://sudz.dev/app/', {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
         method: 'POST',
-        body: JSON.stringify({submitobj}),
-      });
+        body: JSON.stringify({ submitobj }),
+      })
+        .then((responseJson) => {
+          //return responseJson;
+          console.log("Image has been uploaded")
+          this.setState({is_uploading: false});
+          this.setState({image: null});
+          this.setState({inputTextValue : ""});
+          alert("Image upload succesfully");
+
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("Image upload has failed, check internet connection or server down");
+        });
 
     }
     else {
@@ -160,14 +203,14 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
                 <Left>
                   <Thumbnail source={require('./img/user_icon.jpg')} />
                   <Body>
-                    <Text>NativeBase</Text>
-                    <Text note>April 15, 2016</Text>
+                    <Text>{item[0].username}</Text>
+                    <Text note>{moment(new Date(parseInt(item[1]))).tz(local_tz).format('MMM Do HH:mm').toString()}</Text>
                   </Body>
                 </Left>
               </CardItem>
               <CardItem>
                 <Body>
-                  <Image source={require('./img/user_icon.jpg')} style={{ height: 200, width: 200, flex: 1 }} />
+                  <Image source={{ uri: ('data:  image/jpeg;base64,' + item[0].picture) }} style={{ margin: 10, height: 168.75, width: 300, resizeMode: "contain", flex: 1 }} />
                   <Text>
                     {item[0].content}
                   </Text>
@@ -185,7 +228,7 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
           </View>
         );
       //return returnobj;
-      let { image } = this.state;
+
       return (
         <Container>
           <Header />
@@ -195,7 +238,7 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
 
             <Form>
               <Item last style={styles.normal_margin}>
-                <Input placeholder="Post Content" onChangeText={(text) => this.setState({ post_data: text })} />
+                <Input placeholder="Post Content" value={this.state.inputTextValue} onChangeText={(text) => this.setState({ post_data: text, inputTextValue:text})} />
               </Item>
             </Form>
 
@@ -203,9 +246,8 @@ export default class Message_Board extends Component<ComponentProps, ComponentSt
               title="Pick an image from camera roll"
               onPress={this.pickImage}
             />
-
-            {image &&
-              <Image source={{ uri: image }} style={styles.insert_picture} />}
+            {this.upload_progress()}
+            
 
             <Button full style={styles.normal_margin} onPress={this.submitdata.bind(this)}>
               <Text >Submit A Post</Text>
@@ -240,5 +282,10 @@ const styles = StyleSheet.create({
     margin: 10,
     height: 400,
     resizeMode: "contain",
-  }
+  },
+  loading: {
+    flex: 1, 
+    alignItems: 'center',
+    justifyContent: 'center',
+}
 });
